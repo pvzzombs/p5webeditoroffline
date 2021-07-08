@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>p5.js Web Editor</title>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="lib/codemirror.css">
+  <link rel="stylesheet" type="text/css" href="theme/monokai.css">
+  <link rel="stylesheet" type="text/css" href="theme/monokia.css">
+  <link rel="stylesheet" type="text/css" href="theme/monokia_light.css">
+	<link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" href="addon/lint/lint.css">
+  <link rel="stylesheet" href="addon/hint/show-hint.css">
+	<script src="lib/codemirror.js"></script>
+	<script src="mode/javascript/javascript.js"></script>
+  <script src="jshint.min.js"></script>
+  <script src="addon/lint/lint.js"></script>
+  <script src="addon/lint/javascript-lint.js"></script>
+  <script src="addon/hint/show-hint.js"></script>
+  <script src="addon/hint/javascript-hint.js"></script>
+  <script src="addon/edit/closebrackets.js"></script>
+  <script src="addon/display/panel.js"></script>
+</head>
+<body>
+  <div class="takip"></div>
+  <div class="console">
+    <div class="navbarconsole">
+      <span id="navbarconsoletitle">console</span>
+      <input type="button" id="closeconsole" value="x"/>
+    </div>
+    <div class="consoleWindow"></div>
+  </div>
+  <div class="popout">
+    <div class="popout-message">
+      <p class="popout-message-text">Message appears here</p>
+      <span id="popout-closer" class="popout-close">
+        ✖
+      </span>
+    </div>
+  </div>
+	<div class="main-editor">
+    <table rows="2" cols="1">
+      <tbody>
+        <tr>
+          <td>
+            <div id="navbar">
+              <img src="img/logo.png" alt="p5.js logo" id="logo"/>
+              <div id="navbtns">
+                <input type="button" class="edit_button" id="clickme" value="Run"/>
+                <input type="button" class="edit_button" id="saveme" value="Save"/>
+                <input type="button" class="edit_button" id="resetme" value="Reset"/>
+                <input type="button" class="edit_button" id="exportme" value="Export"/>
+                <input type="button" class="edit_button" id="consoleme" value="Console"/>
+                <input type="button" class="edit_button" id="theme" value="Theme"/>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td id="chop">
+            <textarea id="editor">Loading...</textarea>
+            <iframe id="pFrame" srcdoc="<!DOCTYPE html><html><head></head><body></body></html>"></iframe>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+	</div>
+	<script src="editor.js"></script>
+	<br />
+</body>
+</html>
