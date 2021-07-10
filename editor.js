@@ -28,6 +28,7 @@ window.onload = function(){
   var btn7 = document.querySelector("#theme");
   var btn8 = document.querySelector("#popout-closer");
   var btn9 = document.querySelector("#importme");
+  var btn10 = document.querySelector("#about");
   var fileInput = document.querySelector("#fileOpener");
   
   var ExcludedIntelliSenseKeys = {
@@ -164,10 +165,13 @@ window.onload = function(){
     if(editorRunning.value){
     	document.getElementById("clickme").value = "Run";
     	editorRunning.value = false;
-      if(typeof noLoop !== "undefined"){  noLoop();  }
-      if(typeof p5 !== "undefined"){  p5 = undefined;  }
-      document.getElementById("pFrame").contentWindow.document.location.reload();
-      document.getElementById("pFrame").srcdoc = "";
+      if(typeof targetFrame.contentWindow.p5 !== "undefined"){
+        targetFrame.contentWindow.p5.instance.noLoop();
+        targetFrame.contentWindow.p5.instance.remove();
+        targetFrame.contentWindow.p5 = undefined;
+      }
+      targetFrame.contentWindow.document.location.reload();
+      targetFrame.srcdoc = "";
       document.getElementsByClassName("consoleWindow")[0].innerHTML = "";
       if(localStorage){ localStorage.setItem("p5jsdata", editor.getValue()); }
     }else{
@@ -183,7 +187,7 @@ window.onload = function(){
         //safe code, only W000+ is accepted 
       }
     	var js = editor.getValue();
-      targetFrame.srcdoc = "<!DOCTYPE html><html><head><script src='p5Console.js'></script><script src='p5.min.js'></script><script>try{" + js + "}catch(e){console.error(e)}</script></head><body></body></html>"
+      targetFrame.srcdoc = "<!DOCTYPE html><html><head><script src='p5Console.js'></script><script src='p5-1.4.0.min.js'></script><script>p5.disableFriendlyErrors=true;try{" + js + "}catch(e){console.error(e)}</script></head><body></body></html>"
     	document.getElementById("clickme").value = "Stop";
     	editorRunning.value = true;
     }
@@ -237,7 +241,7 @@ window.onload = function(){
       var el;
       if(consoleObjectsLength){
         el = consoleObjects.shift();
-        document.getElementsByClassName("consoleWindow")[0].innerHTML += '<div class="consoleWrapper"><p class="consoleIcon"><img src="img/' + el.type + '.png"/></p><p class="consoleMessage">' + el.message + '</p></div>';
+        document.getElementsByClassName("consoleWindow")[0].innerHTML += '<div class="consoleWrapper"><p class="consoleIcon"><img src="img/' + el.type + '.svg"/></p><p class="consoleMessage">' + el.message + '</p></div>';
       }
     });
   });
@@ -271,7 +275,7 @@ window.onload = function(){
         document.body.style.backgroundColor = "white";
         editor.setOption("theme", "default");
         popout("Theme was set to light.")
-        $tempSettings.theme = "dark";
+        $tempSettings.theme = "light";
         localStorage.setItem("p5settings", JSON.stringify($tempSettings));
       break;
     }
@@ -286,7 +290,7 @@ window.onload = function(){
     fileInput.click();
   });
 
-  fileInput.onchange = function(evt){
+  fileInput.addEventListener("change", function(evt){
     var currentFile = null;
     if(evt.target){
       currentFile = evt.target.files[0];
@@ -303,5 +307,9 @@ window.onload = function(){
     reader.onerror = function(){
       popout("Failed to read sketch file, " + reader.error + " .");
     }
-  };
+  });
+
+  btn10.addEventListener("click", function(){
+    popout("p5.js Offline Web Editor v0.1.1");
+  });
 };
