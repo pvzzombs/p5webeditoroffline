@@ -29,6 +29,23 @@ td#chop{
 
 #navbtns{
   display: flex;
+  overflow-x: scroll;
+}
+
+::-webkit-scrollbar {
+  height: 5px;
+  width: 10px;
+}
+::-webkit-scrollbar-button {
+  background: #ccc;
+}
+
+::-webkit-scrollbar-track-piece {
+  background: #eee;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
 }
 
 .edit_button {
@@ -155,7 +172,8 @@ td#chop{
 .popout-message{
   display: grid;
   grid-template-columns: auto 5%;
-  font-family: cursive;
+  font-family: 'Courier New', Courier, monospace;
+  font-stretch: narrower;
 }
 
 .popout-message-text{

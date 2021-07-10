@@ -27,6 +27,8 @@ window.onload = function(){
   var btn6 = document.querySelector("#closeconsole");
   var btn7 = document.querySelector("#theme");
   var btn8 = document.querySelector("#popout-closer");
+  var btn9 = document.querySelector("#importme");
+  var fileInput = document.querySelector("#fileOpener");
   
   var ExcludedIntelliSenseKeys = {
     "8": "backspace",
@@ -129,6 +131,8 @@ window.onload = function(){
   
   if(localStorage){
     var $data = localStorage.getItem("p5jsdata");
+    var $settings = localStorage.getItem("p5settings");
+    var $tempSettings;
     if($data !== null){
       editor.setValue($data);
     }else{
@@ -136,6 +140,23 @@ window.onload = function(){
       popout("This is your first time using p5 | Web editor offline!");
       editor.setValue("function setup(){\n  createCanvas(400, 300);\n}\n\nfunction draw(){\n  //your code here\n}");
     }
+    if($settings !== null){
+      $tempSettings = JSON.parse($settings);
+      if($tempSettings.theme === 'dark'){
+        editorRunning.theme = 'dark';
+        document.getElementById("logo").src = "img/logo_dark.png";
+        document.body.style.backgroundColor = "#2a2828";
+        editor.setOption("theme", "monokia");
+      }else{
+        editorRunning.theme = 'light';
+        document.getElementById("logo").src = "img/logo.png";
+        document.body.style.backgroundColor = "white";
+        editor.setOption("theme", "default");
+      }
+    }else{
+      localStorage.setItem("p5settings", "{\"theme\" : \"light\"}");
+    }
+    editor.refresh();
   }
   
   btn.addEventListener("click", function(){
@@ -145,8 +166,8 @@ window.onload = function(){
     	editorRunning.value = false;
       if(typeof noLoop !== "undefined"){  noLoop();  }
       if(typeof p5 !== "undefined"){  p5 = undefined;  }
-      targetFrame.srcdoc = "<!DOCTYPE html><html><head></head><body></body></html>";
-      targetFrame.contentWindow.document.location.reload();
+      document.getElementById("pFrame").contentWindow.document.location.reload();
+      document.getElementById("pFrame").srcdoc = "";
       document.getElementsByClassName("consoleWindow")[0].innerHTML = "";
       if(localStorage){ localStorage.setItem("p5jsdata", editor.getValue()); }
     }else{
@@ -231,6 +252,9 @@ window.onload = function(){
   });
   
   btn7.addEventListener("click", function(){
+    var $settings = localStorage.getItem("p5settings");
+    var $tempSettings;
+    $tempSettings = JSON.parse($settings);
     switch(editorRunning.theme){
       case 'light':
         editorRunning.theme = 'dark';
@@ -238,6 +262,8 @@ window.onload = function(){
         document.body.style.backgroundColor = "#2a2828";
         editor.setOption("theme", "monokia");
         popout("Theme was set to dark.");
+        $tempSettings.theme = "dark";
+        localStorage.setItem("p5settings", JSON.stringify($tempSettings));
       break;
       case 'dark':
         editorRunning.theme = 'light';
@@ -245,6 +271,8 @@ window.onload = function(){
         document.body.style.backgroundColor = "white";
         editor.setOption("theme", "default");
         popout("Theme was set to light.")
+        $tempSettings.theme = "dark";
+        localStorage.setItem("p5settings", JSON.stringify($tempSettings));
       break;
     }
   });
@@ -253,4 +281,27 @@ window.onload = function(){
     clearTimeout(editorRunning.popout);
     document.getElementsByClassName("popout")[0].style.display = 'none';
   });
+
+  btn9.addEventListener("click", function(){
+    fileInput.click();
+  });
+
+  fileInput.onchange = function(evt){
+    var currentFile = null;
+    if(evt.target){
+      currentFile = evt.target.files[0];
+    }else if(evt.srcElement){
+      currentFile = evt.srcElement.files[0];
+    }
+    //console.log(currentFile);
+    var reader = new FileReader();
+    reader.readAsText(currentFile);
+    reader.onload = function(){
+      editor.setValue(reader.result);
+      popout(currentFile.name + " loaded successfully.");
+    }
+    reader.onerror = function(){
+      popout("Failed to read sketch file, " + reader.error + " .");
+    }
+  };
 };
